@@ -49,6 +49,8 @@ log_section() {
   fi
 }
 
+cd ~
+
 # Detect OS
 
 OS="$(uname -s 2>/dev/null)"
@@ -72,9 +74,9 @@ case "$PLATFORM" in
 debian|ubuntu)
     apt-get update
     apt-get install -y curl git ca-certificates
-    sudo mkdir -p /etc/apt/keyrings
-    curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
-    echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
+    mkdir -p /etc/apt/keyrings
+    curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
     apt-get update
     apt-get install -y gum
     log_success "Installed Successfully"
@@ -90,6 +92,10 @@ macos)
     log_success "Installed Successfully"
     ;;
 esac
+
+git clone https://github.com/kastaniotis/.dotfiles
+cd ~/.dotfiles
+exit
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # . "$SCRIPT_DIR/scripts/helpers/platform.sh"
