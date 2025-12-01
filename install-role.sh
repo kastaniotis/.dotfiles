@@ -1,15 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# . "$SCRIPT_DIR/scripts/helpers/platform.sh"
-# . "$SCRIPT_DIR/scripts/helpers/log.sh"
-
-# PLATFORM="$(detect_platform)"
-# log_section "Detected Platform: $PLATFORM"
-
-# install_prerequisites "$PLATFORM"
-
+SCRIPT_DIR="~/.dotfiles"
 
 ROLE="$(gum choose --limit 1 --header 'Select the Role of this machine' \
     workstation \
