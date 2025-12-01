@@ -73,7 +73,7 @@ log_info "Installing Prerequisites"
 case "$PLATFORM" in
 debian|ubuntu)
     apt-get update
-    apt-get install -y curl git ca-certificates
+    apt-get install -y curl git gnupg2 ca-certificates
     mkdir -p /etc/apt/keyrings
     curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg
     echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
