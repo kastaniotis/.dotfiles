@@ -1,0 +1,19 @@
+# Shared environment for all shells
+
+# Tell sops where the age key lives
+export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
+
+# Git Identity
+export GIT_USER="dimkasta"
+
+# GitHub token
+export GITHUB_TOKEN_FILE="$HOME/.config/dotfiles/github_token"
+if [ -f "$GITHUB_TOKEN_FILE" ]; then
+  export GITHUB_TOKEN="$(cat "$GITHUB_TOKEN_FILE")"
+  export GH_TOKEN="$GITHUB_TOKEN"
+fi
+
+# Load shared aliases if present
+if [ -f "$HOME/.shell_aliases" ]; then
+  . "$HOME/.shell_aliases"
+fi

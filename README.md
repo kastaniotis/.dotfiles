@@ -1,0 +1,4 @@
+- Managed with git + shell + sops + age
+- Contains:
+  - dotfiles for shell, git, neovim, etc.
+  - encrypted secrets (SSH keys, tokens) in ./secrets

@@ -1,0 +1,61 @@
+# Listing
+alias la='eza -lAh'
+
+# bat is named "bat" on macOS, "batcat" on Debian
+if command -v bat >/dev/null 2>&1; then
+  alias cat='bat'
+elif command -v batcat >/dev/null 2>&1; then
+  alias cat='batcat'
+fi
+
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# Git shortcuts
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git pull'
+alias gco='git checkout'
+
+# Sops shortcuts
+alias sd='sops -d'
+alias se='sops -e'
+
+# Quick editors
+alias v='nvim'
+alias vi='nvim'
+
+# Safer operations
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# docker short aliases
+alias d='docker'
+alias dps='docker ps'
+alias dimg='docker images'
+alias dbl='docker build'
+alias dcls='docker container ls'
+alias dstop='docker stop'
+alias drm='docker rm'
+alias drmi='docker rmi'
+alias dlogs='docker logs -f'
+
+# docker-compose (compose v2 → 'docker compose')
+alias dc='docker compose'
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+alias dcre='docker compose restart'
+alias dcb='docker compose build'
+alias dcr='docker compose run'
+alias dcl='docker compose logs -f'
+
+dcshell() {
+  service="${1:-app}"
+  docker compose exec "$service" bash
+}
+alias dsh='dcshell'

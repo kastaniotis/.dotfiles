@@ -1,0 +1,8 @@
+# no editor swap files
+*~
+*.swp
+*.swo
+
+# temporary decrypted files (if you ever create them)
+secrets/*.decrypted
+secrets/*.plain
