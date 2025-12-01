@@ -6,5 +6,5 @@
 docker run -it --rm debian:stable-slim bash
 
 apt update
-apt install curl
+apt install -y curl
 curl -fSL https://raw.githubusercontent.com/kastaniotis/.dotfiles/master/install.sh | sh
