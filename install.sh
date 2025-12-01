@@ -96,4 +96,4 @@ esac
 git clone https://github.com/kastaniotis/.dotfiles
 cd ~/.dotfiles
 
-. install-role.sh
+. ~/.dotfiles/install-role.sh
