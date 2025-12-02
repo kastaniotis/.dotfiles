@@ -2,10 +2,6 @@
 [user]
     name = Dimitris Kastaniotis
     email = d.kastaniotis@iconic.gr
-
-[credential]
-    helper = !/Users/dimkasta/.dotfiles/scripts/git-credential-env.sh
-
 [core]
     pager = delta
 
@@ -32,3 +28,5 @@
 
 [diff]
     colorMoved = default
+[credential]
+	helper = /Users/dimkasta/.dotfiles/scripts/git-credential-env.sh

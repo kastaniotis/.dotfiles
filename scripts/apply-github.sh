@@ -24,14 +24,14 @@ ui show:success "GitHub token applied."
 
 # --- configure git credential.helper globally -------------------------------
 
-HELPER="!$HOME/.dotfiles/scripts/git-credential-env.sh"
+HELPER="$HOME/.dotfiles/scripts/git-credential-env.sh"
 
-current_global="$(git config --global --get credential.helper || echo "")"
-if [ "$current_global" != "$HELPER" ]; then
-  ui show:info "Configuring git to use env-based credential helper (global)…"
-  git config --global credential.helper "$HELPER"
-else
-  ui show:info "Git global credential.helper already set to env-based helper."
-fi
+ui show:info "Configuring git to use env-based credential helper (global)…"
+
+# Optional: clear any existing global helpers
+git config --global --unset-all credential.helper 2>/dev/null || true
+
+git config --global credential.helper "$HELPER"
 
 ui show:success "GitHub credential helper configured."
+
