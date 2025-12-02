@@ -15,9 +15,10 @@ TARGET_FILE="$TARGET_DIR/github_token"
 
 mkdir -p "$TARGET_DIR"
 
-ui show:info "Writing GitHub token to $TARGET_FILE"
-printf "%s\n" "$token" > "$TARGET_FILE"
-chmod 600 "$TARGET_FILE"
+# ui show:info "Writing GitHub token to $TARGET_FILE"
+# printf "%s\n" "$token" > "$TARGET_FILE"
+# chmod 600 "$TARGET_FILE"
+write "$token" "$TARGET_FILE"
 
 ui show:success "GitHub token applied."
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Load shared shell environment
 if [ -f "$HOME/.shell_env" ]; then
   . "$HOME/.shell_env"

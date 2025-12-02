@@ -7,3 +7,4 @@ ROLE="$(ui show:choice 'Select the Role of this machine' 'workstation' 'server')
 
 . "$SCRIPT_DIR/scripts/install-tools.sh" 
 . "$SCRIPT_DIR/scripts/link-dotfiles.sh" 
+. "$SCRIPT_DIR/scripts/apply-github.sh"

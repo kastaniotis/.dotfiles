@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 # Shared environment for all shells
 
 # Tell sops where the age key lives
