@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
+set -euo 
 
 SRC="${SCRIPT_DIR}/dotfiles"
 DEST="$HOME"
