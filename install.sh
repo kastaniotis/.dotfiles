@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
+set -euo
 
 # Small helper: check if a command exists
 has_cmd() {

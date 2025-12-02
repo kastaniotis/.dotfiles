@@ -1,33 +1,33 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
+set -euo
 
 log_section "Installing as a $ROLE on $PLATFORM"
 
-COMMON_PKGS=(ansible neovim starship fzf yq bat eza git-delta tmux)
-DEBIAN_PKGS=(kitty)
-MAC_PKGS=(kitty font-fira-code-nerd-font)
+COMMON_PKGS="ansible neovim starship fzf yq bat eza git-delta tmux"
+DEBIAN_PKGS="kitty"
+MAC_PKGS="kitty font-fira-code-nerd-font"
 
 
 case "$PLATFORM" in
   macos)
-    for pkg in "${COMMON_PKGS[@]}";do
+    for pkg in $COMMON_PKGS;do
       brew install "$pkg"
     done
 
     # Macos is always UI
-    for pkg in "${MAC_PKGS[@]}";do
+    for pkg in $MAC_PKGS;do
       brew install "$pkg"
     done
 
     ;;
 
   debian|ubuntu)
-    for pkg in "${COMMON_PKGS[@]}"; do
+    for pkg in $COMMON_PKGS; do
       apt-get install -y "$pkg"
     done
     if [ "$ROLE" = "workstation" ]; then
     
-        for pkg in "${DEBIAN_PKGS[@]}"; do
+        for pkg in $DEBIAN_PKGS; do
           apt-get install -y "$pkg"
         done
 
