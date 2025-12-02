@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="~/.dotfiles"
+SCRIPT_DIR="$HOME/.dotfiles"
 
 ROLE="$(gum choose --limit 1 --header 'Select the Role of this machine' \
     workstation \
