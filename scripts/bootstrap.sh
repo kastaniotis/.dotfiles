@@ -7,14 +7,14 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 echo "=== Dotfiles bootstrap starting ==="
 echo "Repo root: $REPO_ROOT"
 
-# 1) Install tools (git, gum, ansible, neovim, starship, kitty, fonts, etc.)
-if [ -x "$REPO_ROOT/scripts/install-tools.sh" ]; then
-  echo "[1/5] Running install-tools.sh..."
-  "$REPO_ROOT/scripts/install-tools.sh"
-else
-  echo "ERROR: scripts/install-tools.sh not found or not executable."
-  exit 1
-fi
+# # 1) Install tools (git, gum, ansible, neovim, starship, kitty, fonts, etc.)
+# if [ -x "$REPO_ROOT/scripts/install-tools.sh" ]; then
+#   echo "[1/5] Running install-tools.sh..."
+#   "$REPO_ROOT/scripts/install-tools.sh"
+# else
+#   echo "ERROR: scripts/install-tools.sh not found or not executable."
+#   exit 1
+# fi
 
 # 2) Setup age + sops key if needed (only if key file missing)
 AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
@@ -31,13 +31,13 @@ else
 fi
 
 # 3) Link dotfiles into $HOME
-if [ -x "$REPO_ROOT/scripts/link-dotfiles.sh" ]; then
-  echo "[3/5] Linking dotfiles..."
-  "$REPO_ROOT/scripts/link-dotfiles.sh"
-else
-  echo "ERROR: scripts/link-dotfiles.sh not found or not executable."
-  exit 1
-fi
+# if [ -x "$REPO_ROOT/scripts/link-dotfiles.sh" ]; then
+#   echo "[3/5] Linking dotfiles..."
+#   "$REPO_ROOT/scripts/link-dotfiles.sh"
+# else
+#   echo "ERROR: scripts/link-dotfiles.sh not found or not executable."
+#   exit 1
+# fi
 
 # 4) Apply SSH keys (if secrets file exists)
 SSH_SECRETS_FILE="$REPO_ROOT/secrets/ssh_keys.sops.yaml"

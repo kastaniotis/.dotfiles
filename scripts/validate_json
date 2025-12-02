@@ -1,0 +1,107 @@
+#!/usr/bin/env sh
+
+# validate_json VALUE [rules...]
+# Outputs JSON:
+#   { "success": true,  "errors": [] }
+#   { "success": false, "errors": ["...", "..."] }
+
+validate_json() {
+    # Basic usage check
+    if [ "$#" -lt 1 ]; then
+        printf '%s\n' \
+          '{"success":false,"errors":["VALUE argument is required"]}'
+        return 1
+    fi
+
+    # jq dependency check
+    if ! command -v jq >/dev/null 2>&1; then
+        printf '%s\n' \
+          '{"success":false,"errors":["jq is required but not installed"]}'
+        return 1
+    fi
+
+    value=$1
+    shift
+
+    # initial JSON state
+    result_json='{"success":true,"errors":[]}'
+
+    fail() {
+        # mutate JSON: mark as failed and append error
+        result_json=$(
+            printf '%s\n' "$result_json" |
+            jq -c --arg msg "$1" '
+                .success = false
+                | .errors += [$msg]
+            '
+        )
+    }
+
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --required)
+                [ -n "$value" ] || fail "Value is required"
+                ;;
+            --numeric)
+                case $value in
+                    *[!0-9]*)
+                        fail "Value must be numeric (digits only)"
+                        ;;
+                esac
+                ;;
+            --integer)
+                case $value in
+                    ""|[+-])
+                        fail "Value must be an integer"
+                        ;;
+                    [+-]*)
+                        rest=${value#?}
+                        case $rest in
+                            *[!0-9]*)
+                                fail "Value must be an integer"
+                                ;;
+                        esac
+                        ;;
+                    *[!0-9]*)
+                        fail "Value must be an integer"
+                        ;;
+                esac
+                ;;
+            --boolean)
+                lower=$(printf '%s' "$value" | tr '[:upper:]' '[:lower:]')
+                case $lower in
+                    y|yes|n|no|true|false) ;;
+                    *)
+                        fail "Value must be boolean: y/yes/n/no/true/false"
+                        ;;
+                esac
+                ;;
+            --pattern=*)
+                pat=${1#*=}
+                case $value in
+                    $pat) ;;
+                    *)
+                        fail "Value must match pattern '$pat'"
+                        ;;
+                esac
+                ;;
+            --help|-h)
+                printf '%s\n' \
+                  '{"success":false,"errors":["Usage: validate_json VALUE [--required] [--numeric] [--integer] [--boolean] [--pattern=GLOB]"]}'
+                return 1
+                ;;
+            *)
+                fail "Unknown rule '$1'"
+                ;;
+        esac
+        shift
+    done
+
+    printf '%s\n' "$result_json"
+}
+
+# If executed as a program (not sourced), run validate_json with CLI args.
+# Assumes file name is "validate_json".
+if [ "${0##*/}" = "validate_json" ]; then
+    validate_json "$@"
+fi

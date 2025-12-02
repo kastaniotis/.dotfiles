@@ -1,39 +1,31 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-# --- checks --------------------------------------------------------------
-
-if ! command -v gum >/dev/null 2>&1; then
-  echo "Error: gum not found in PATH." >&2
-  echo "Install it first (e.g. 'brew install gum' or your distro's method)." >&2
-  exit 1
-fi
-
-if ! command -v age-keygen >/dev/null 2>&1; then
-  gum style --foreground 196 "Error: age-keygen not found in PATH."
-  exit 1
-fi
-
-if ! command -v sops >/dev/null 2>&1; then
-  gum style --foreground 196 "Error: sops not found in PATH."
-  exit 1
-fi
+#!/usr/bin/env sh
+set -eu
 
 # --- determine paths -----------------------------------------------------
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+REPO_ROOT="$HOME/.dotfiles"
+KEY_FILE="$HOME/.config/sops/age/keys.txt"
+echo ""
+echo "Setting up cryptography for your secrets"
 
-OS="$(uname -s)"
-case "$OS" in
-  Darwin|Linux)
-    KEY_FILE="${HOME}/.config/sops/age/keys.txt"
-    ;;
-  *)
-    gum style --foreground 214 "Warning: unsupported OS '$OS', using ~/.config/sops/age/keys.txt"
-    KEY_FILE="${HOME}/.config/sops/age/keys.txt"
-    ;;
-esac
+if ! gum confirm "Do you want to set up your secrets and their encryption now?"; then
+    echo "Aborting."
+    exit
+fi
+echo ""
+if [ -f "$KEY_FILE" ]; then
+    choice="$(gum choose "Use existing AGE key file" "Generate or paste new AGE keys" --header "Existing Key File will be backed up")" || exit 1
+
+    case "$choice" in
+        "Use existing AGE key file")
+            echo "Using: $KEY_FILE"
+            exit
+            ;;
+        "Generate or paste new AGE keys")
+            echo "Continuing..."
+            ;;
+    esac
+fi
 
 mkdir -p "$(dirname "$KEY_FILE")"
 
@@ -43,59 +35,83 @@ gum style --border normal --border-foreground 212 --margin "1 0" --padding "0 2"
   "Age key file: $KEY_FILE"
 
 # --- ask for existing keys or generate new --------------------------------
+generation="$(gum choose "Paste your AGE keys" "Generate new AGE keys")" 
 
-gum style --margin "1 0" "You can either:" \
-  "  • paste existing age keys" \
-  "  • or press Enter to generate a new keypair"
+if [ "$generation" = "Paste your AGE keys" ]; then
+  while :; do
+    AGE_PUB_INPUT="$(gum input \
+        --placeholder "age1..." \
+        --header "Existing AGE PUBLIC key")" || exit 1
 
-AGE_PUB_INPUT=$(
-  gum input \
-    --placeholder "Leave empty to generate new keypair" \
-    --header "Existing age PUBLIC key (age1...), or empty for new"
-)
+    if [ -z "$AGE_PUB_INPUT" ]; then
+        gum style --foreground 196 "Input cannot be empty."
+        continue
+    fi
 
-AGE_SECRET_INPUT=$(
-  gum input \
-    --placeholder "Leave empty to generate new keypair" \
-    --header "Existing age SECRET key (AGE-SECRET-KEY-1...), or empty for new"
-)
+    case "$AGE_PUB_INPUT" in
+        age1*)
+            break
+            ;;
+        *)
+            gum style --foreground 196 "Key must start with 'age1'."
+            ;;
+    esac
+  done
 
-AGE_PUB=""
-AGE_SECRET=""
+  while :; do
+    AGE_SECRET_INPUT="$(gum input \
+        --placeholder "AGE-SECRET-KEY-1..." \
+        --header "Existing AGE SECRET key")" || exit 1
 
-if [[ -n "$AGE_PUB_INPUT" || -n "$AGE_SECRET_INPUT" ]]; then
-  # User wants to use existing keys
-  if [[ -z "$AGE_PUB_INPUT" || -z "$AGE_SECRET_INPUT" ]]; then
-    gum style --foreground 196 "Error: you must provide BOTH public and secret keys, or leave BOTH empty."
-    exit 1
-  fi
+    if [ -z "$AGE_SECRET_INPUT" ]; then
+        gum style --foreground 196 "Input cannot be empty."
+        continue
+    fi
+
+    case "$AGE_SECRET_INPUT" in
+        AGE-SECRET-KEY-1*)
+            break
+            ;;
+        *)
+            gum style --foreground 196 "Key must start with 'AGE-SECRET-KEY-1'."
+            ;;
+    esac
+  done
 
   AGE_PUB="$AGE_PUB_INPUT"
   AGE_SECRET="$AGE_SECRET_INPUT"
 
-  if [[ "$AGE_PUB" != age1* ]]; then
-    gum style --foreground 196 "Error: public key must start with 'age1'."
-    exit 1
-  fi
-  if [[ "$AGE_SECRET" != AGE-SECRET-KEY-1* ]]; then
-    gum style --foreground 196 "Error: secret key must start with 'AGE-SECRET-KEY-1'."
-    exit 1
-  fi
-
   gum style --foreground 10 --margin "1 0" "Using provided age keypair."
 
   TS="$(date -Iseconds 2>/dev/null || date)"
-  if [[ -f "$KEY_FILE" ]]; then
+  if [ -f "$KEY_FILE" ]; then
     backup="${KEY_FILE}.bak.$(date +%s)"
     mv "$KEY_FILE" "$backup"
     gum style --foreground 244 "Existing key file backed up to ${backup}"
   fi
 
-  cat > "$KEY_FILE" <<EOF
+    cat > "$KEY_FILE" <<EOF
 # created: ${TS}
 # public key: ${AGE_PUB}
 ${AGE_SECRET}
 EOF
+
+  echo ""
+  gum style --foreground 244 "Key file successfully Created"
+
+fi
+
+
+exit
+
+  
+
+
+  
+
+
+
+
 
 else
   # Generate new keypair
