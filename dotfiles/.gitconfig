@@ -29,4 +29,4 @@
 [diff]
     colorMoved = default
 [credential]
-	helper = /Users/dimkasta/.dotfiles/scripts/git-credential-env.sh
+	helper = store --file=/Users/dimkasta/.config/git/github.credentials
