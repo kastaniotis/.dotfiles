@@ -12,7 +12,7 @@
 #   export GH_TOKEN="$GITHUB_TOKEN"
 # fi
 
-GIT_CREDS_FILE="$HOME/.config/git/github.credentials"
+# GIT_CREDS_FILE="$HOME/.config/git/github.credentials"
 
 # Load shared aliases if present
 if [ -f "$HOME/.shell_aliases" ]; then
